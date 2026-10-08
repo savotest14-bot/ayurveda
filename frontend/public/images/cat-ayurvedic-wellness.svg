@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="100%" height="100%">
+  <rect width="400" height="300" fill="#faf6ee"/>
+  <!-- Stem -->
+  <path d="M200 250 L200 110" stroke="#064e29" stroke-width="6" stroke-linecap="round"/>
+  <!-- Central Top Leaf -->
+  <path d="M200 115 C190 90 190 60 200 45 C210 60 210 90 200 115 Z" fill="#075e32"/>
+  <!-- Upper Left Leaf -->
+  <path d="M198 140 C170 125 150 100 145 80 C165 85 190 105 198 140 Z" fill="#086d3b"/>
+  <!-- Upper Right Leaf -->
+  <path d="M202 140 C230 125 250 100 255 80 C235 85 210 105 202 140 Z" fill="#086d3b"/>
+  <!-- Lower Left Leaf -->
+  <path d="M198 185 C165 175 140 150 135 130 C160 135 185 155 198 185 Z" fill="#064e29"/>
+  <!-- Lower Right Leaf -->
+  <path d="M202 185 C235 175 260 150 265 130 C240 135 215 155 202 185 Z" fill="#064e29"/>
+</svg>

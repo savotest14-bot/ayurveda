@@ -1,0 +1,26 @@
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import tailwindcss from '@tailwindcss/vite'
+
+// https://vite.dev/config/
+export default defineConfig({
+  plugins: [react(), tailwindcss()],
+  css: {
+    postcss: {
+      plugins: []
+    }
+  },
+  server: {
+    port: 5174,
+    proxy: {
+      '/uploads': {
+        target: 'http://localhost:5000',
+        changeOrigin: true
+      },
+      '/images': {
+        target: 'http://localhost:5000',
+        changeOrigin: true
+      }
+    }
+  }
+})

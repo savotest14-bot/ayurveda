@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="leafGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#5fe828"/>
+      <stop offset="100%" stop-color="#369c0d"/>
+    </linearGradient>
+    <linearGradient id="leafGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6df832"/>
+      <stop offset="100%" stop-color="#3fb411"/>
+    </linearGradient>
+  </defs>
+  <!-- Background Badge -->
+  <circle cx="64" cy="64" r="60" fill="#013f20" stroke="#22c55e" stroke-width="3"/>
+  
+  <!-- Right Leaf -->
+  <path d="M 63 92 C 64 74 72 52 101 30 C 100 50 96 74 74 88 C 69 91 65 92 63 92 Z" fill="url(#leafGrad2)"/>
+  <path d="M 63 92 C 71 72 82 50 101 30 M 75 72 L 87 66 M 83 58 L 93 53" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-opacity="0.9"/>
+  
+  <!-- Left Leaf -->
+  <path d="M 63 92 C 61 76 52 58 27 44 C 33 60 42 82 58 89 C 61 91 62 92 63 92 Z" fill="url(#leafGrad1)"/>
+  <path d="M 63 92 C 55 76 44 60 27 44 M 50 76 L 40 71 M 43 65 L 34 61" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-opacity="0.9"/>
+</svg>

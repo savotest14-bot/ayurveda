@@ -1,0 +1,231 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  CUSTOMER
+}
+
+enum PaymentMethod {
+  COD_WHATSAPP
+  RAZORPAY
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+  COD_PENDING
+  COD_CONFIRMED
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+enum ContactMessageStatus {
+  NEW
+  READ
+  RESOLVED
+}
+
+model User {
+  id           String    @id @default(uuid())
+  name         String
+  email        String    @unique
+  phone        String?
+  passwordHash String
+  role         Role      @default(CUSTOMER)
+  isActive     Boolean   @default(true)
+  orders       Order[]
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@map("users")
+}
+
+model Category {
+  id          Int       @id @default(autoincrement())
+  name        String
+  slug        String    @unique
+  description String?
+  image       String?
+  active      Boolean   @default(true)
+  sortOrder   Int       @default(0)
+  products    Product[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("categories")
+}
+
+model Product {
+  id               Int            @id @default(autoincrement())
+  name             String
+  slug             String         @unique
+  shortDescription String?
+  description      String
+  price            Float
+  compareAtPrice   Float?
+  stock            Int            @default(100)
+  sku              String?        @unique
+  categoryId       Int?
+  category         Category?      @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  featured         Boolean        @default(false)
+  active           Boolean        @default(true)
+  ingredients      String?
+  benefits         String?
+  usage            String?
+  weight           String?
+  images           ProductImage[]
+  orderItems       OrderItem[]
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+
+  @@map("products")
+}
+
+model ProductImage {
+  id        Int      @id @default(autoincrement())
+  productId Int
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  url       String
+  altText   String?
+  order     Int      @default(0)
+  isPrimary Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@map("product_images")
+}
+
+model Blog {
+  id            Int       @id @default(autoincrement())
+  title         String
+  slug          String    @unique
+  excerpt       String
+  content       String
+  featuredImage String?
+  author        String    @default("Varsha Ayurveda Editorial")
+  published     Boolean   @default(true)
+  publishedAt   DateTime? @default(now())
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@map("blogs")
+}
+
+model Order {
+  id              Int           @id @default(autoincrement())
+  orderNumber     String        @unique
+  customerId      String?
+  customer        User?         @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  customerName    String
+  customerEmail   String
+  customerPhone   String
+  shippingAddress String
+  city            String
+  state           String
+  pincode         String
+  subtotal        Float
+  shippingCharge  Float         @default(0)
+  discount        Float         @default(0)
+  totalAmount     Float
+  paymentMethod   PaymentMethod
+  paymentStatus   PaymentStatus @default(PENDING)
+  orderStatus     OrderStatus   @default(PENDING)
+  notes           String?
+  items           OrderItem[]
+  payments        Payment[]
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id          Int      @id @default(autoincrement())
+  orderId     Int
+  order       Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId   Int?
+  product     Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+  productName String
+  quantity    Int
+  price       Float
+  total       Float
+
+  @@map("order_items")
+}
+
+model Payment {
+  id                Int      @id @default(autoincrement())
+  orderId           Int
+  order             Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  razorpayOrderId   String?
+  razorpayPaymentId String?
+  razorpaySignature String?
+  amount            Float
+  currency          String   @default("INR")
+  status            String
+  paymentMethod     String
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@map("payments")
+}
+
+model ContactMessage {
+  id        Int                  @id @default(autoincrement())
+  name      String
+  email     String
+  phone     String?
+  message   String
+  status    ContactMessageStatus @default(NEW)
+  createdAt DateTime             @default(now())
+
+  @@map("contact_messages")
+}
+
+model SiteSettings {
+  id                    Int      @id @default(1)
+  storeName             String   @default("Varsha Ayurveda")
+  phone                 String   @default("9907303284")
+  whatsappNumber        String   @default("919907303284")
+  email                 String   @default("info@varshaayurveda.in")
+  address               String   @default("Berasia Road, Bhopal, Madhya Pradesh, India")
+  instagramUrl          String?
+  facebookUrl           String?
+  shippingCharge        Float    @default(50)
+  freeShippingThreshold Float    @default(499)
+  codEnabled            Boolean  @default(true)
+  razorpayEnabled       Boolean  @default(true)
+  announcementText      String   @default("Natural Ayurvedic Wellness Products | Order Online | WhatsApp Support")
+  heroTagline           String   @default("Natural Wellness, Rooted in Ayurveda")
+  heroSubtitle          String   @default("Discover thoughtfully crafted Ayurvedic and herbal products designed to support your everyday wellness routine.")
+  footerText            String   @default("Bringing the goodness of Ayurveda to your daily life with natural and herbal wellness products.")
+  updatedAt             DateTime @updatedAt
+
+  @@map("site_settings")
+}
+
+model WebhookLog {
+  id        Int      @id @default(autoincrement())
+  eventId   String   @unique
+  event     String
+  payload   String
+  processed Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  @@map("webhook_logs")
+}
