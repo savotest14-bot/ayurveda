@@ -1,3 +1,5 @@
+import { ENV } from '../config/env.js';
+
 export const openApiSpec = {
   openapi: "3.0.3",
   info: {
@@ -7,10 +9,18 @@ export const openApiSpec = {
     contact: {
       name: "Varsha Ayurveda Support",
       email: "info@varshaayurveda.in",
-      url: "https://varshaayurveda.in"
+      url: "https://vershaayurveda.com"
     }
   },
   servers: [
+    {
+      url: `${ENV.BACKEND_URL}/api`,
+      description: "Current Backend Server"
+    },
+    {
+      url: "https://api.vershaayurveda.com/api",
+      description: "Production API Server"
+    },
     {
       url: "http://localhost:5000/api",
       description: "Local Development Server"

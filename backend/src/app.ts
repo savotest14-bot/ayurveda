@@ -17,6 +17,9 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
+// Trust reverse proxy (Nginx) for secure cookies and accurate rate-limiting IPs
+app.set('trust proxy', 1);
+
 // Security headers
 app.use(helmet({
   crossOriginResourcePolicy: { policy: 'cross-origin' }
@@ -26,15 +29,23 @@ app.use(helmet({
 const allowedOrigins = [
   ENV.FRONTEND_URL,
   ENV.ADMIN_URL,
+  'https://vershaayurveda.com',
+  'https://www.vershaayurveda.com',
+  'https://admin.vershaayurveda.com',
+  'http://vershaayurveda.com',
+  'http://www.vershaayurveda.com',
+  'http://admin.vershaayurveda.com',
   'http://localhost:5173',
   'http://localhost:5174',
   'http://127.0.0.1:5173',
   'http://127.0.0.1:5174'
-];
+].filter(Boolean).map(url => (url ? url.replace(/\/+$/, '') : ''));
 
 app.use(cors({
   origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) {
+    if (!origin) return callback(null, true);
+    const normalizedOrigin = origin.replace(/\/+$/, '');
+    if (allowedOrigins.includes(normalizedOrigin)) {
       callback(null, true);
     } else {
       callback(null, true); // Allow dev environments flexibly
